@@ -1,6 +1,6 @@
 const util = require('util')
 const gc = require('../config/')
-const bucket = gc.bucket('all-might-2')
+const bucket = gc.bucket('pt-media-dev')
 
 const { format } = util
 
@@ -27,7 +27,8 @@ const uploadImage = (file) => new Promise((resolve, reject) => {
     )
     resolve(publicUrl)
   })
-  .on('error', () => {
+  .on('error', (error) => {
+    console.error(error);
     reject(`Unable to upload image, something went wrong`)
   })
   .end(buffer)
