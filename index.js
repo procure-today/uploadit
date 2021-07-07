@@ -24,11 +24,12 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(cors());
 app.use((req, res, next) => {
   try {
+    let token = req.headers.authorization?.replace('Bearer ', '');
     var decoded = jwt.verify(token, process.env.JWT_SECRET || 'thisisasamplesecret');
     next()
   } catch(err) {
     // err
-    res.statusCode(401).send({message: 'Unauthorised! Please login again'})
+    res.status(403).send({message: 'Unauthorised! Please try again'})
   }
 })
 
@@ -44,11 +45,13 @@ app.post('/uploads', async (req, res, next) => {
         data: imageUrl
       })
   } catch (error) {
+    console.error(error);
     next(error)
   }
 })
 
 app.use((err, req, res, next) => {
+  console.error(err);
   res.status(500).json({
     error: err,
     message: 'Internal server error!',
