@@ -1,6 +1,9 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const multer = require('multer')
+const cors = require('cors')
+
+const jwt = require('jsonwebtoken')
 
 const uploadImage = require('./helpers/helpers')
 
@@ -18,6 +21,16 @@ app.disable('x-powered-by')
 app.use(multerMid.single('file'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
+app.use(cors());
+app.use((req, res, next) => {
+  try {
+    var decoded = jwt.verify(token, process.env.JWT_SECRET || 'thisisasamplesecret');
+    next()
+  } catch(err) {
+    // err
+    res.statusCode(401).send({message: 'Unauthorised! Please login again'})
+  }
+})
 
 app.post('/uploads', async (req, res, next) => {
   try {
