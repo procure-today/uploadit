@@ -21,9 +21,11 @@ const uploadImage = (file) => new Promise((resolve, reject) => {
     resumable: false
   })
 
+  const randomChar = Math.random().toString(36).substring(7);
+
   blobStream.on('finish', () => {
     const publicUrl = format(
-      `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+      `https://storage.googleapis.com/${bucket.name}/${randomChar}-${blob.name}`
     )
     resolve(publicUrl)
   })
