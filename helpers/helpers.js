@@ -16,16 +16,18 @@ const { format } = util
 const uploadImage = (file) => new Promise((resolve, reject) => {
   const { originalname, buffer } = file
 
-  const blob = bucket.file(originalname.replace(/ /g, "_"))
+  const randomChar = Math.random().toString(36).substring(7);
+
+  const fileName = `${randomChar}-${originalname}`
+
+  const blob = bucket.file(fileName.replace(/ /g, "_"))
   const blobStream = blob.createWriteStream({
     resumable: false
   })
 
-  const randomChar = Math.random().toString(36).substring(7);
-
   blobStream.on('finish', () => {
     const publicUrl = format(
-      `https://storage.googleapis.com/${bucket.name}/${randomChar}-${blob.name}`
+      `https://storage.googleapis.com/${bucket.name}/${blob.name}`
     )
     resolve(publicUrl)
   })
